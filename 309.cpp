@@ -1,18 +1,24 @@
 class Solution {
 public:
-    int dfs(int i , int turn , vector<int>& prices){
-        if(i >= prices.size()) return 0;
-        if(turn == 0){
-            return max(-prices[i] + dfs(i + 1 , 1 , prices) , dfs(i + 1 , 0 , prices));
-        }
-        else if(turn == 1){
-            return max(prices[i] + dfs(i + 1 , 2 , prices) , dfs(i + 1 , 1 , prices)) ;
-        }
-        else{
-            return dfs(i + 1 , 0 , prices);
-        }
-    }
     int maxProfit(vector<int>& prices) {
-        return dfs(0 , 0 , prices);
+        int n= prices.size();
+        if(prices.size()==1){
+            return 0;
+        }
+        
+        vector<int>buy(n,0);
+        vector<int>sell(n,0);
+        
+        buy[0]=-prices[0];
+        sell[0]=0;
+        buy[1]=max(-prices[0],-prices[1]);
+        sell[1]=max(0,-prices[0]+prices[1]);
+        
+        for(int i=2;i<n;i++)
+      {
+        buy[i]=max(buy[i-1],sell[i-2]-prices[i]);
+        sell[i]=max(sell[i-1],buy[i-1]+prices[i]);
+      }
+        return sell[n-1];
     }
 };
